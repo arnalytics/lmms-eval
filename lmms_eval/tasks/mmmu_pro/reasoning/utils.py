@@ -45,7 +45,7 @@ def parse_options(options):
     return choices_str
 
 
-def construct_prompt(doc, post_prompt="Answer with the option letter from the given choices directly."):
+def construct_prompt(doc, post_prompt='Please show your choice in the answer field with only the choice letter, e.g., "answer": "C".'):
     question = doc["question"]
     # Weirdly, data["options"] is a string in MMMU Huggingface dataset
     parsed_options = parse_options(ast.literal_eval(doc["options"]))

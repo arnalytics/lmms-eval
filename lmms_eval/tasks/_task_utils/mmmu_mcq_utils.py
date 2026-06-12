@@ -15,6 +15,18 @@ def get_multi_choice_info(options, start_chr="A"):
 
 
 def parse_mmmu_multi_choice_response(response, all_choices, index2ans):
+    if isinstance(response, str) and "</think>" in response:
+        clean_text = response.split("</think>")[-1].strip()
+        match_json = re.search(r'\"answer\"\s*:\s*\"([A-J])\"', clean_text, re.IGNORECASE)
+        if match_json:
+            response = match_json.group(1).upper()
+        else:
+            match_letra = re.findall(r'\b[A-J]\b', clean_text.replace('"', ' ').replace("'", " "))
+            if match_letra:
+                response = match_letra[-1]
+            else:
+                response = clean_text
+                
     for char in [",", ".", "!", "?", ";", ":", "'"]:
         response = response.strip(char)
     response = " " + response + " "
