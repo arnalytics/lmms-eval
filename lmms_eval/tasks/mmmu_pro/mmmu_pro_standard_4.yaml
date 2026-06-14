@@ -1,9 +1,9 @@
-task: "mmmu_pro_standard"
+task: "mmmu_pro_standard_4"
 tag:
   - public_eval_qwen3_5_family
   - public_eval_gemini3_family
 dataset_path: MMMU/MMMU_Pro
-dataset_name: "standard (10 options)"
+dataset_name: "standard (4 options)"
 test_split: test
 output_type: generate_until
 doc_to_visual: !function utils.mmmu_pro_doc_to_visual
