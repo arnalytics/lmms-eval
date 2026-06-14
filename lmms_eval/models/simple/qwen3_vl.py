@@ -8,6 +8,7 @@ from loguru import logger as eval_logger
 from PIL import Image
 from tqdm import tqdm
 from transformers import AutoConfig, AutoProcessor, AutoTokenizer
+from peft import PeftModel
 
 from lmms_eval import utils
 from lmms_eval.api.instance import Instance
@@ -85,6 +86,7 @@ class Qwen3_VL(lmms):
         interleave_visuals: Optional[bool] = False,
         enable_thinking: Optional[bool] = None,
         reasoning_prompt: Optional[str] = None,
+        peft: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -114,7 +116,17 @@ class Qwen3_VL(lmms):
         if attn_implementation is not None:
             model_kwargs["attn_implementation"] = attn_implementation
 
-        self._model = model_cls.from_pretrained(pretrained, **model_kwargs).eval()
+        self._model = model_cls.from_pretrained(pretrained, **model_kwargs)
+
+        if peft is not None:
+            eval_logger.info(f"Loading PEFT adapter from: {peft}")
+            self._model = PeftModel.from_pretrained(
+                self._model,
+                peft,
+                is_trainable=False,
+            )
+
+        self._model = self._model.eval()
         self.min_pixels = min_pixels
         self.max_pixels = max_pixels
         self.total_pixels = total_pixels
